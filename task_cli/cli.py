@@ -18,9 +18,13 @@ def main():
 
     # update command
     update_parser = subparsers.add_parser("update", help="Update a task")
-    update_parser.add_argument("id", help="The task id")
+    update_parser.add_argument("id", help="Task id")
     update_parser.add_argument("description", help="New task description")
 
+    # delete command
+    delete_parser = subparsers.add_parser("delete", help="Delete a task")
+    delete_parser.add_argument("id", help="Task id")
+    
     args = parser.parse_args()
 
     file_path = "tasks.json"
@@ -67,6 +71,25 @@ def main():
         with open(file_path, 'w') as f:
             json.dump(existing_data, f, indent=4)
         print(f"Updating task {args.id}: {args.description}")
+    
+    elif args.command == "delete":
+        task_id = int(args.id)
+
+        with open(file_path, 'r', encoding='utf-8') as f:
+            existing_data = json.load(f)
+        
+        esse_eh_meu_garoto = None
+        for entry in existing_data:
+            if entry['id'] == task_id:
+                esse_eh_meu_garoto = entry
+
+        index = existing_data.index(esse_eh_meu_garoto)
+        del existing_data[index]
+
+        with open(file_path, 'w') as f:
+            json.dump(existing_data, f, indent=4)
+        print(f"Deleting task {args.id}")
+
 
 if __name__ == "__main__":
     main()
