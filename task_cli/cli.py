@@ -16,6 +16,11 @@ def main():
     add_parser = subparsers.add_parser("add", help="Add a new task")
     add_parser.add_argument("description", help="Task description")
 
+    # update command
+    update_parser = subparsers.add_parser("update", help="Update a task")
+    update_parser.add_argument("id", help="The task id")
+    update_parser.add_argument("description", help="New task description")
+
     args = parser.parse_args()
 
     file_path = "tasks.json"
@@ -46,6 +51,22 @@ def main():
         with open(file_path, 'w') as f:
             json.dump(existing_data, f, indent=4)
         print(f"Adding task: {args.description}")
+    
+    elif args.command == "update":
+        task_id = int(args.id)
+        update_time = datetime.datetime.now().isoformat()
+
+        with open(file_path, 'r', encoding='utf-8') as f:
+            existing_data = json.load(f)
+        
+        for entry in existing_data:
+            if entry['id'] == task_id:
+                entry['description'] = args.description
+                entry['updatedAt'] = update_time
+        
+        with open(file_path, 'w') as f:
+            json.dump(existing_data, f, indent=4)
+        print(f"Updating task {args.id}: {args.description}")
 
 if __name__ == "__main__":
     main()
