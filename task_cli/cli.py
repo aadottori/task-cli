@@ -1,4 +1,8 @@
 import argparse
+import os
+import json
+
+
 
 def main():
     parser = argparse.ArgumentParser(
@@ -13,6 +17,13 @@ def main():
     add_parser.add_argument("title", help="Task title")
 
     args = parser.parse_args()
+
+    file_path = "tasks.json"
+    initial_data = {}
+
+    if not os.path.exists(file_path):
+        with open(file_path, 'w') as f:
+            json.dump(initial_data, f, indent=4)
 
     if args.command == "add":
         print(f"Adding task: {args.title}")
